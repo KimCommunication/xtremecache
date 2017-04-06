@@ -18,7 +18,6 @@ To setup module, edit constants in config.php:
 ```
 /**
  * Cache Time-To-Live in seconds
- * Since cache gets cleaned quite often, use a very high value (!removed admin performance override, cache is not cleaned so often anymore)
  */
 const CACHE_TTL = 172800; // = 48 hours
 
@@ -29,12 +28,12 @@ const CACHE_TTL = 172800; // = 48 hours
 const DRIVER = 'files'; // you can use files, sqlite, apc, cookie, memcache, memcached, predis, redis, wincache, xcache
 
 /**
- * Secret key to allow specific product to be deleted and regenerated from cache
+ * Secret key for allowing specific product to be deleted from cache and regenerated
  */
 const SECRET_KEY = 'change-me';
 
 /**
- * Cache folder for files and sql caches
+ * Cache folder for file and sql cache
  */
 const CACHE_DIR = 'xcache';
 	
@@ -44,12 +43,9 @@ const CACHE_DIR = 'xcache';
 const SEPARATE_MOBILE_AND_DESKTOP = false;
 
 /**
- * True add one more DB query to each reqest.
-	 * Clear cache after changing this value, because
-	 * "maintenance" cached pages can still be served if this value
-	 * is currently false and shop has been prieviously in maintenance mode,
-	 * or opposite.
-	 * If maintenance mode is On and this value true, cache will be off.
+ * True may add one more DB query to each reqest, based on your PrestaShop cache strategic.
+ * If value is false, we will serve cached pages during maintenance.
+ * If value is true, cache will be completly off during maintenance.
  */
 const CHECK_FOR_MAINTENANCE = false;
 ```
