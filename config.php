@@ -23,14 +23,11 @@ const CACHE_DIR = 'xcache';
 /**
  * Cache mobile and desktop versions separatelly?
  */
-const SEPARATE_MOBILE_AND_DESKTOP = false;
+const SEPARATE_MOBILE_AND_DESKTOP = true;
 
 /**
- * True add one more DB query to each reqest.
-	 * Clear cache after changing this value, because
-	 * "maintenance" cached pages can still be served if this value
-	 * is currently false and shop has been prieviously in maintenance mode,
-	 * or opposite.
-	 * If maintenance mode is On and this value true, cache will be off.
+ * True may add one more DB query to each reqest, based on your PrestaShop cache strategic.
+ * If value is false, we will serve cached pages during maintenance.
+ * If value is true, cache will be completly off during maintenance.
  */
 const CHECK_FOR_MAINTENANCE = false;
