@@ -1,7 +1,6 @@
 <?php
 /**
  * Clean & regenerate specific product page by product ID
- * Clean & regenerate specific product page by product ID
  * @author Pavol Durko
  * @license MIT
  */
