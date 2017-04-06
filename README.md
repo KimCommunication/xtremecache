@@ -2,8 +2,8 @@ This is modified and little tweaked version for PrestaShop 1.7.
 
 
 To change behavior edit constants in xtremecache.php:
-   
-   /**
+```
+    /**
      * Cache Time-To-Live in seconds
      * Since cache gets cleaned quite often, use a very high value (!removed admin performance override)
      */
@@ -31,6 +31,7 @@ To change behavior edit constants in xtremecache.php:
 	 * If maintenance mode is On and this value true, cache will be off.
      */
    const CHECK_FOR_MAINTENANCE = false;
+```
 
 It is not tested on PrestaShop 1.6.
 
