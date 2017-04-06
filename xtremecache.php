@@ -2,7 +2,8 @@
 /**
  * Serve cached pages with no request processing
  * @author Salerno Simone
- * @version 1.0.6
+ * @edited Pavol Durko
+ * @version 1.0.7
  * @license MIT
  */
 
@@ -46,7 +47,7 @@ class XtremeCache extends Module {
     public function __construct() {
         $this->name = 'xtremecache';
         $this->tab = 'frontend_features';
-        $this->version = '1.0.6';
+        $this->version = '1.0.7';
         $this->author = 'Simone Salerno';
 
         parent::__construct();
