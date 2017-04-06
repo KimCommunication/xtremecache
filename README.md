@@ -1,3 +1,30 @@
+This is modified and little tweaked version for PrestaShop 1.7.
+It is not tested on PrestaShop 1.6.
+
+To change behavior edit constants in xtremecache.php:
+    const CACHE_TTL = 172800;
+    
+   /**
+     * Cache driver
+     */
+   const DRIVER = 'files';
+	
+	/**
+     * Cache mobile and desktop versions separatelly?
+     */
+   const SEPARATE_MOBILE_AND_DESKTOP = false;
+    
+	/**
+     * True add one more DB query to each reqest.
+	 * Clear cache after changing this value, because
+	 * "maintenance" cached pages can still be served if this value
+	 * is currently false and shop has been prieviously in maintenance mode,
+	 * or opposite.
+	 * If maintenance mode is On and this value true, cache will be off.
+     */
+   const CHECK_FOR_MAINTENANCE = false;
+
+SimoneS93 wrote:
 #Prestashop Xtreme cache module
 
 Today I was thinking about Prestashop front office performance optimization and the lack of a full cache system came to mind (by full cache, I mean save the page html to file and serve that on subsequent requests, with no processing at all). 
