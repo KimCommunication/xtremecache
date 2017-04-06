@@ -1,20 +1,28 @@
 This is modified and little tweaked version for PrestaShop 1.7.
-It is not tested on PrestaShop 1.6.
+
 
 To change behavior edit constants in xtremecache.php:
-    const CACHE_TTL = 172800;
+   
+   /**
+     * Cache Time-To-Live in seconds
+     * Since cache gets cleaned quite often, use a very high value (!removed admin performance override)
+     */
+     
+   const CACHE_TTL = 172800;
     
    /**
      * Cache driver
      */
+     
    const DRIVER = 'files';
 	
 	/**
      * Cache mobile and desktop versions separatelly?
      */
+     
    const SEPARATE_MOBILE_AND_DESKTOP = false;
     
-	/**
+    /**
      * True add one more DB query to each reqest.
 	 * Clear cache after changing this value, because
 	 * "maintenance" cached pages can still be served if this value
@@ -23,6 +31,9 @@ To change behavior edit constants in xtremecache.php:
 	 * If maintenance mode is On and this value true, cache will be off.
      */
    const CHECK_FOR_MAINTENANCE = false;
+
+It is not tested on PrestaShop 1.6.
+
 
 SimoneS93 wrote:
 #Prestashop Xtreme cache module
