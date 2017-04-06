@@ -103,12 +103,11 @@ class XtremeCache extends Module {
         if (!$this->isActive())
             return;
         
-        $controller = $params['controller'];
-        
-        if (is_subclass_of($controller, 'FrontController') &&
-            !is_subclass_of($controller, 'OrderController') &&
-            !is_subclass_of($controller, 'OrderOpcController')) {
-            
+        if (!is_subclass_of($this->context->controller, 'OrderController') &&
+            !is_subclass_of($this->context->controller, 'OrderOpcController') &&
+            !$this->isMaintenance()  // be sure we do not cache pages during maintenance
+            )
+        {    
             $key = $this->getCacheKey();
             //mark page as cached
             $debugInfo = sprintf(
@@ -121,6 +120,19 @@ class XtremeCache extends Module {
             $output = $debugInfo . $params['output'];
             $this->fast_cache->set($key, $output, CACHE_TTL);        
         }
+    }
+    
+    /**
+     * Hack to get protected variable
+     * Are we in maintenance?
+     * do not work on old PHP
+     */
+    private function isMaintenance()
+    {
+        $reflection = new ReflectionClass($this->context->controller);
+        $property = $reflection->getProperty('maintenance');
+        $property->setAccessible(true);
+        return (bool)$property->getValue($this->context->controller);
     }
     
     public function hookActionEmptySmartyCache($params)
