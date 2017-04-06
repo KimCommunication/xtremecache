@@ -105,7 +105,7 @@ class XtremeCache extends Module {
      * @param array $params
      */
     public function hookActionDispatcher($params) {
-        if (!$this->isActive($params))
+        if (!$this->isActive())
             return;
         
         //if not in the checkout process
@@ -127,7 +127,7 @@ class XtremeCache extends Module {
      * @param string $params
      */
     public function hookActionRequestComplete($params) {
-        if (!$this->isActive($params))
+        if (!$this->isActive())
             return;
 		
         $controller = $params['controller'];
@@ -159,7 +159,7 @@ class XtremeCache extends Module {
 	 * checks for: dev mode, profilling, front controller, maintenance mode?, customer, shopping cart, AJAX and POST requests
      * @return boolean
      */
-    private function isActive($params)
+    private function isActive()
 	{
         //turn off on debug mode
         if (_PS_MODE_DEV_ || _PS_DEBUG_PROFILING_)
