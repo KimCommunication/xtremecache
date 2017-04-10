@@ -88,7 +88,7 @@ class XtremeCache extends Module {
         if (!$this->isActive())
             return;
         
-        //if not in the checkout process
+        //if not in the checkout process, probably not necessary, checkout cant continue without products in cart (isActive)
         if ($params['controller_class'] !== 'OrderController' && 
             $params['controller_class'] !== 'OrderOpcController')
         {
@@ -96,9 +96,6 @@ class XtremeCache extends Module {
             $cached = $this->getFromCache();
             if ($cached !== false)
             {
-                //die(var_dump(get_included_files()));
-                //empty output buffer
-                //ob_clean();
                 exit($cached);
             }
         }
@@ -114,13 +111,15 @@ class XtremeCache extends Module {
             return;
         
         if (!is_subclass_of($this->context->controller, 'OrderController') &&
-            !is_subclass_of($this->context->controller, 'OrderOpcController')
-            && !$this->isMaintenance() // comment this line to do not cache pages during maintenance
+            !is_subclass_of($this->context->controller, 'OrderOpcController') &&
+            !is_subclass_of($this->context->controller, 'PageNotFoundController') // do not cache 404
+            && !$this->isMaintenance() // comment this line to cache pages during maintenance too
             )
             {
-                if ($this->saveToCache($params['output'])) {}
+                if ($this->saveToCache($params['output']))
+                {}
                 else {
-                    echo 'Unable to write cache.';
+                    //echo 'Unable to write cache.'; // inform about cache issues, misconfigurations..
                 } // we can do stats
             }
     }
@@ -157,15 +156,15 @@ class XtremeCache extends Module {
             return $this->stopCache();
         }
         
-        // make sure processing occurs only once and whole code will not execute in hookActionRequestComplete
-        if ($this->_activeCache === null)
+        // make sure processing occurs only once and whole code will not execute in hookActionRequestComplete again
+        // we get all information at first time
+        if ($this->_activeCache !== true || $this->_activeCache !== false)
         {
-            //turn off on debug mode
+            //turn off on debug mode and in profilling
             if (_PS_MODE_DEV_ || _PS_DEBUG_PROFILING_)
                 return $this->stopCache();
             
             //disable on ajax and non-GET requests
-            //$active = !Tools::getValue('ajax', false);
             $active = !(isset($this->context->controller->ajax) ? $this->ajax : false);
             $active = $active && $_SERVER['REQUEST_METHOD'] === 'GET';
             if (!$active)
@@ -176,21 +175,32 @@ class XtremeCache extends Module {
                 return $this->stopCache();
             
             //check that customer is not logged in
-            $customer = $this->context->customer;
-            if ($customer && $customer instanceof Customer && $customer->id > 0)
-                return $this->stopCache();
+            if (isset($this->context->customer))
+            {
+                $customer = $this->context->customer;
+                if ($customer && $customer instanceof Customer && $customer->id > 0)
+                    return $this->stopCache();
+            }
             
-			//for guest checkout, check that cart is empty
-			$cart = new Cart($this->context->cookie->id_cart);
-            if ($cart && $cart instanceof Cart && $cart->nbProducts() > 0)
-                return $this->stopCache();
+            //for guest checkout, check that cart is empty
+            if (isset($this->context->cookie->id_cart))
+            {
+                $cart = new Cart($this->context->cookie->id_cart);
+                if ($cart && $cart instanceof Cart && $cart->nbProducts() > 0)
+                    return $this->stopCache();
+            }
             
             // we will be working with cache, so we get key and cache handler
-            $this->cacheKey = $this->getCacheKey();
-            $this->ps_cache = new PSCache();
-            $this->_activeCache = true;
+            $this->initCache();
         }
         return $this->_activeCache;
+    }
+    
+    private function initCache()
+    {
+        $this->cacheKey = $this->getCacheKey();
+        $this->ps_cache = new PSCache();
+        $this->_activeCache = true;
     }
     
     private function stopCache()
@@ -213,17 +223,19 @@ class XtremeCache extends Module {
         
         $url = $device.
                 'lang-'.$this->context->language->id.
-                '|shop-'.$this->context->shop->id.'|'.
+                '|shop-'.$this->context->shop->id.
+                '|theme-'.$this->context->shop->theme_name.
+                '|puri-'.$this->context->shop->physical_uri.
+                '|vuri-'.$this->context->shop->virtual_uri.
+                '|domain-'.$this->context->shop->domain.'|'.
                 $currency.
-                $url;
-        
+                'url-'.$url;
         return md5($url);
     }
     
     /**
      * Hack to get protected variable
      * Are we in maintenance?
-     * do not work on old PHP
      */
     private function isMaintenance()
     {
@@ -240,18 +252,14 @@ class XtremeCache extends Module {
      */
     private function getCurrencyId()
     {
-        //if ($this->context->currency === null) // always be null at this point (Dispatcher)
-        //{
-            if (empty($this->context->cookie->id_currency))
-            {
-                $defaultCurrency = Currency::getDefaultCurrency(); // query for default
-                $currency = ($defCurrency === false) ? 1 : $defaultCurrency; // fallback, currency ID 1 if not found
-            }
-            else
-                $currency = $this->context->cookie->id_currency;
-        //}
-        //else
-            $currency = $this->context->currency->id;
+        // get currency from cookies
+        if (isset($this->context->cookie->id_currency))
+            $currency = $this->context->cookie->id_currency;
+        else // get PrestaShop default currency
+        {
+            $defaultCurrency = Currency::getDefaultCurrency(); // query for default
+            $currency = ($defCurrency === false) ? 1 : $defaultCurrency; // fallback, set currency ID to 1 if not found
+        }
         return (int) $currency;
     }
     
