@@ -95,7 +95,7 @@ class CacheFilesystem {
 
     public function flush($deleteAll = false)
     {
-        $this->cleanDir($this->getCachePath(), $deleteAll);
+        $this->cleanDir($this->getCachePath(null, false), $deleteAll);
     }
     
     public function clean($key)
@@ -108,12 +108,19 @@ class CacheFilesystem {
             return false;
     }
     
-    private function getCachePath($key = '')
+    private function getCachePath($key = null, $use_host = true)
     {
-        if ($key !== '')
-            $key = $key[0] . DS . $key;
+        if ($use_host)
+            $host = isset($_SERVER['HTTP_HOST']) ? trim(strtolower($_SERVER['HTTP_HOST'])) . DS : 'nohost' . DS;
+        else
+            $host = '';
         
-        return __DIR__ . DS . '..' . DS . CACHE_DIR . DS . $key;
+        if ($key !== null)
+            $key = $key[0] . DS . $key;
+        else
+            $key = '';
+        
+        return __DIR__ . DS . '..' . DS . CACHE_DIR . DS . $host . $key;
     }
     
     private function cleanDir($dir, $deleteFolders = false)
