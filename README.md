@@ -2,15 +2,16 @@ This is modified and little tweaked version for PrestaShop 1.7.
 - based on SimoneS93 xtremecache
 - ability to generate same cache for mobile and desktop (usefull for people using responsive templates and serving same content for mobile and desktop)
 - ability to detect maintenance mode (must be enabled in config.php) and do not serve cached pages when we do maintenance
-- ability to clean & regenerate specific product page by product ID from cache
+- ability to check for currency
+- ability to clean cache or only one product by CRON
 
-To remotelly clean & regenerate product id=8 page cache call url:
+To clean cache by CRON, call this url:
 ```
-http://www.yoursite.com/modules/xtremecache/do.php?change-me&pid=8&regenerate
+http://www.yoursite.com/modules/xtremecache/clean.php?your-secret&flush
 ```
-If you just want to clean product cache and do not regenerate, use:
+If you just want to clean simple product with ID 8, use:
 ```
-http://www.yoursite.com/modules/xtremecache/do.php?change-me&pid=8
+http://www.yoursite.com/modules/xtremecache/clean.php?your-secret&flush=8&regenerate
 ```
 
 
@@ -19,23 +20,23 @@ To setup module, edit constants in config.php:
 /**
  * Cache Time-To-Live in seconds
  */
-const CACHE_TTL = 172800; // = 48 hours
+const CACHE_TTL = 172800;
 
 /**
  * Cache driver
- * tested only with files and memcached
  */
-const DRIVER = 'files'; // you can use files, sqlite, apc, cookie, memcache, memcached, predis, redis, wincache, xcache
+const DRIVER = 'files'; // 'prestashop' or plain files
 
 /**
- * Secret key for allowing specific product to be deleted from cache and regenerated
- */
-const SECRET_KEY = 'change-me';
-
-/**
- * Cache folder for file and sql cache
+ * Cache folder for file cache
  */
 const CACHE_DIR = 'xcache';
+
+/**
+ * Default CHMOD for created files and folders
+ * For security, please use 0666 for module and 0644 for cgi
+ */
+const DEFAULT_CHMOD = 0770;
 	
 /**
  * Cache mobile and desktop versions separatelly?
@@ -43,14 +44,19 @@ const CACHE_DIR = 'xcache';
 const SEPARATE_MOBILE_AND_DESKTOP = false;
 
 /**
- * True may add one more DB query to each reqest, based on your PrestaShop cache strategic.
- * If value is false, we will serve cached pages during maintenance.
- * If value is true, cache will be completly off during maintenance.
+ * Do you use more than one currency?
+ * Set to false, to disable querying database.
+ */
+const MULTICURRENCY = false;
+
+/**
+ * If value is false, we will serve cached pages during maintenance and do not query DB.
+ * If value is true, cache will be completly off during maintenance and we may query DB.
  */
 const CHECK_FOR_MAINTENANCE = false;
 ```
 
-It is not tested on PrestaShop 1.6.
+Not yet tested on PrestaShop 1.6.
 
 Cavecats:
 - if you use dynamic modules like Your last viewed items, it will be cached and displayed for another visitors :)
