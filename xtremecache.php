@@ -85,10 +85,6 @@ class XtremeCache extends Module {
      */
     public function hookActionDispatcher(&$params)
 	{
-		// i dont like unnecessary overrides, this is workaround for clearing cache
-		if ($_GET['empty_smarty_cache'] == 1 || $_GET['empty_sf2_cache'] == 1)
-			$this->_clearCache();
-		
         if (!$this->isActive())
             return;
         
@@ -152,15 +148,20 @@ class XtremeCache extends Module {
      */
     private function isActive()
     {
+		//turn off if we are not in front office
+		if($this->context->controller->controller_type !== 'front')
+		{
+			// i dont like unnecessary overrides, this is workaround for clearing cache
+			if ($_GET['empty_smarty_cache'] == 1 || $_GET['empty_sf2_cache'] == 1)
+				$this->_clearCache();
+			return $this->stopCache();
+		}
+		
 		// make sure processing occurs only once and whole code will not execute in hookActionRequestComplete
 		if ($this->_activeCache === null)
 		{
 			//turn off on debug mode
 			if (_PS_MODE_DEV_ || _PS_DEBUG_PROFILING_)
-				return $this->stopCache();
-			
-			//turn off if we are not in front office
-			if($this->context->controller->controller_type !== 'front')
 				return $this->stopCache();
 			
 			//disable on ajax and non-GET requests
