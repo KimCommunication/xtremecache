@@ -60,7 +60,7 @@ Not yet tested on PrestaShop 1.6.
 
 Cavecats:
 - if you use dynamic modules like Your last viewed items, it will be cached and displayed for another visitors :)
-- if you turn your PrestaShop into maintenance mode and do not change module config constant CHECK_FOR_MAINTENANCE to true, your shop will be serving cached pages, maybe it is behaviour desired for someone
+- if you turn your PrestaShop into maintenance mode and do not change CHECK_FOR_MAINTENANCE to true, your shop will be serving cached pages, maybe it is desired for some of us
 
 
 SimoneS93 wrote:
