@@ -55,7 +55,7 @@ const MULTICURRENCY = false;
 const CHECK_FOR_MAINTENANCE = false;
 ```
 
-Not yet tested on PrestaShop 1.6.
+On PrestaShop 1.6 disable moving javasript to end, then it will be working.
 
 Cavecats:
 - if you use dynamic modules like Your last viewed items, it will be cached and displayed for another visitors :)
