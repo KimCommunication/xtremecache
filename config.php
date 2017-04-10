@@ -1,33 +1,38 @@
 <?php
 /**
  * Cache Time-To-Live in seconds
- * Since cache gets cleaned quite often, use a very high value (!removed admin performance override)
  */
 const CACHE_TTL = 172800;
 
 /**
  * Cache driver
  */
-const DRIVER = 'files';
+const DRIVER = 'files'; // 'prestashop' or plain files
 
 /**
- * Secret key to allow specific product to be deleted and regenerated from cache
- */
-const SECRET_KEY = 'change-me';
-
-/**
- * Cache folder for files and sql caches
+ * Cache folder for file cache
  */
 const CACHE_DIR = 'xcache';
+
+/**
+ * Default CHMOD for created files and folders
+ * For security, please use 0666 for module and 0644 for cgi
+ */
+const DEFAULT_CHMOD = 0770;
 	
 /**
  * Cache mobile and desktop versions separatelly?
  */
-const SEPARATE_MOBILE_AND_DESKTOP = true;
+const SEPARATE_MOBILE_AND_DESKTOP = false;
 
 /**
- * True may add one more DB query to each reqest, based on your PrestaShop cache strategic.
- * If value is false, we will serve cached pages during maintenance.
- * If value is true, cache will be completly off during maintenance.
+ * Do you use more than one currency?
+ * Set to false, to disable querying database.
+ */
+const MULTICURRENCY = false;
+
+/**
+ * If value is false, we will serve cached pages during maintenance and do not query DB.
+ * If value is true, cache will be completly off during maintenance and we may query DB.
  */
 const CHECK_FOR_MAINTENANCE = false;
