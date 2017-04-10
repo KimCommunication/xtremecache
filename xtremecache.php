@@ -180,13 +180,10 @@ class XtremeCache extends Module {
             if ($customer && $customer instanceof Customer && $customer->id > 0)
                 return $this->stopCache();
             
-            //for guest checkout, check that cart is empty
-            if (isset($this->context->cart))
-            {
-                $cart = $this->context->cart;
-                if ($cart && $cart instanceof Cart && $cart->nbProducts() > 0)
-                    return $this->stopCache();
-            }
+			//for guest checkout, check that cart is empty
+			$cart = new Cart($this->context->cookie->id_cart);
+            if ($cart && $cart instanceof Cart && $cart->nbProducts() > 0)
+                return $this->stopCache();
             
             // we will be working with cache, so we get key and cache handler
             $this->cacheKey = $this->getCacheKey();
