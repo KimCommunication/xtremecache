@@ -1,5 +1,4 @@
-This is modified and little tweaked version for PrestaShop 1.7.
-- based on SimoneS93 xtremecache
+This is modified and tweaked version for PrestaShop 1.7 & PrestaShop 1.6 caching module, based on SimoneS93.
 - ability to generate same cache for mobile and desktop (usefull for people using responsive templates and serving same content for mobile and desktop)
 - ability to detect maintenance mode (must be enabled in config.php) and do not serve cached pages when we do maintenance
 - ability to check for currency
